@@ -1,0 +1,19 @@
+# «Вдвоём» — мини-приложение пары, свой compose в /opt/vdvoyom.
+# Живой канал SSE идёт без сжатия и с немедленной отправкой, иначе события
+# застревают в буфере gzip.
+vdvoyom.example.com {
+	request_body {
+		max_size 2MB
+	}
+	@stream path /api/stream*
+	handle @stream {
+		reverse_proxy vdvoyom-app:3000 {
+			flush_interval -1
+		}
+	}
+	handle {
+		encode zstd gzip
+		reverse_proxy vdvoyom-app:3000
+	}
+	header -Server
+}

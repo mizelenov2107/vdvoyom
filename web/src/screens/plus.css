@@ -1,0 +1,45 @@
+/* «Вдвоём+» под макет владельца (11.10.2026). Свой файл: styles.css ведёт другой агент. */
+
+.plus-reasons {
+  padding: 4px 14px 2px;
+}
+
+.plus-reasons .plus-test {
+  padding: 7px 0;
+}
+
+.plus-more {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+  border-top: 1px solid var(--line);
+}
+
+/* Тариф: выбранный — рамкой акцента; «выгоднее» — маленьким ярлыком */
+.plus-plan.on {
+  outline: 2px solid var(--accent, var(--me));
+  outline-offset: -2px;
+}
+
+.plus-chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 99px;
+  vertical-align: 2px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fff;
+  background: #b80f6a;
+}
+
+/* «Может позже»: палец попадает с первого раза — 44 px по высоте */
+.plus-later {
+  display: block;
+  min-height: 44px;
+  margin: 2px auto -6px;
+  padding: 0 24px;
+  font-weight: 500;
+}

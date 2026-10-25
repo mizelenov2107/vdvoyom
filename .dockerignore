@@ -1,0 +1,13 @@
+**/node_modules
+web/dist
+server/dev.db*
+server/data
+.git
+*.log
+_istochniki
+server/film-posters
+server/imdb-ratings.db*
+e2e/otchet
+e2e/kadry
+test-results
+otzyvy

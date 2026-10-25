@@ -1,0 +1,32 @@
+# «Вдвоём» на общем сервере. Наружу — через общий Caddy
+# (внешняя сеть caddy-proxy, алиас vdvoyom-app), свой Caddy не нужен.
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      TZ: Europe/Moscow
+    volumes:
+      - dbdata:/data
+      # Каталоги колод, вопросы и тесты лежат рядом и обновляются rsync-ом без пересборки
+      - ./server/data:/app/server/data:ro
+    networks:
+      v6:
+      caddy-proxy:
+        aliases: [vdvoyom-app]
+    mem_limit: 384m
+
+networks:
+  # IPv6 обязателен: до api.telegram.org с этого хостинга по IPv4 доходит
+  # примерно одна попытка из пяти.
+  v6:
+    enable_ipv6: true
+    ipam:
+      config:
+        - subnet: fd00:7e0:4::/64
+  caddy-proxy:
+    external: true
+
+volumes:
+  dbdata:

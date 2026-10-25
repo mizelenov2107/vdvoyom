@@ -1,0 +1,25 @@
+/* Нижнее меню: подпись под центральным сердцем (11.10.2026). Свой файл: styles.css ведёт
+   другой агент. Сам круг — прежний .tabbar .center (styles.css, soft.css), теперь это
+   значок внутри кнопки, а кнопка — колонка «круг + подпись», как соседние вкладки. */
+html[data-design] .tabbar .tab-center {
+  justify-content: flex-end;
+  gap: 3px;
+  /* подпись на одной линии с подписями соседних вкладок, круг выступает над меню */
+  padding: 0 0 12px;
+  overflow: visible;
+}
+
+html[data-design] .tabbar .tab-center .center {
+  flex-shrink: 0;
+  width: 54px;
+  height: 54px;
+  margin: 0;
+}
+
+.tabbar .tab-heart-label {
+  line-height: 1.1;
+}
+
+html[data-design] .tabbar .tab-center.on .tab-heart-label {
+  color: var(--accent-ink, var(--text));
+}

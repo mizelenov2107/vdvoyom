@@ -1,0 +1,42 @@
+/* Админка: воронка, таблицы по источникам и неделям, блогеры, подарок «Вдвоём+» (11.10.2026).
+   Свой файл, а не styles.css: общий стиль ведёт другой участник. */
+.admin-tabs .segmented button { font-size: 13px; padding-left: 4px; padding-right: 4px; }
+
+.funnel-steps { display: grid; gap: 12px; }
+.funnel-step .small { margin-top: 3px; }
+.funnel-bar { height: 8px; border-radius: 99px; background: var(--line); margin-top: 6px; overflow: hidden; }
+.funnel-bar > div { height: 100%; border-radius: 99px; background: var(--grad); min-width: 2px; }
+
+.admin-def summary { cursor: pointer; font-weight: 700; }
+.admin-def p { margin: 8px 0 0; line-height: 1.45; }
+
+.admin-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 0 12px;
+  border-radius: var(--r-md);
+  background: var(--card);
+}
+.admin-table { border-collapse: collapse; font-size: 13px; min-width: 100%; white-space: nowrap; }
+.admin-table th, .admin-table td { padding: 9px 10px; text-align: right; border-bottom: 1px solid var(--line); }
+.admin-table thead th { color: var(--muted); font-weight: 600; font-size: 12px; }
+.admin-table th:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  background: var(--card);
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+}
+.admin-table tbody tr:last-child th, .admin-table tbody tr:last-child td { border-bottom: 0; }
+
+.icon-btn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; color: var(--muted); flex-shrink: 0; }
+.icon-btn:active { background: var(--line); }
+
+.pair-plus .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.pair-plus .plus-on { color: var(--violet); }
+
+.funnel-dates > .field { flex: 1; min-width: 0; }
+.funnel-dates input { width: 100%; min-width: 0; }

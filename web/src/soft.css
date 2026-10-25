@@ -1,0 +1,604 @@
+@import "@fontsource-variable/lora";
+@import "@fontsource-variable/nunito";
+
+/* ——— «Мягкое» оформление ———
+   Редизайн по UI UX Pro Max, профиль «Couple & Relationship App»: Soft UI Evolution
+   с приглушённым сиянием Aurora вверху экрана, тёплая роза вместо фиолетово-розового
+   перехода, фото и постеры — главные цвета экрана. Заголовки Lora, текст Nunito
+   (оба с кириллицей). Правила скила: контраст текста от 4,5:1, нажимаемое от 44 px,
+   видимый фокус, мягкие тени вместо рамок, движения 200–300 мс, сияние неподвижное.
+   Действует только при <html data-design="soft">, исходные стили в styles.css не тронуты.
+   Шрифты грузятся, только когда оформление включено: @font-face качает файл по первому
+   использованию. */
+
+html[data-design="soft"] {
+  --font: "Nunito Variable", -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --display: "Lora Variable", Georgia, serif;
+  --mono: var(--font);
+
+  --violet: #8b72e6;
+  --rose: #d9467a;
+  --sky: #4d9de0;
+  --mint: #2fae96;
+  --sun: #eba12c;
+  --coral: #ec7357;
+  --blue: var(--sky);
+  --green: #2fae96;
+  --amber: #eba12c;
+  --pink: #d9467a;
+  --red: #d9354f;
+
+  --grad: linear-gradient(135deg, #d23c6e 0%, #b8286a 60%, #a8235f 100%);
+  --logo-a: #9a86ee;
+  --logo-b: #e2507f;
+
+  --r-xl: 30px;
+  --r-lg: 22px;
+  --r-md: 18px;
+  --r-sm: 12px;
+
+  --tabbar-h: 64px;
+  --ease: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+html.light[data-design="soft"] {
+  --bg: #fbf3f1;
+  --card: #ffffff;
+  --card-2: #f6ebe8;
+  --card-3: #eedfdb;
+  --line: rgba(92, 40, 60, 0.08);
+  --text: #2b1f25;
+  --muted: #6f5d65;
+  /* Было #9c8a91 — контраст 2,97 на фоне, ниже нормы 4,5 (тест 11.10.2026). Теперь 4,9 на
+     фоне, 5,4 на карточке, 4,6 на --card-2; от --muted (5,6) всё ещё отличается */
+  --faint: #78656d;
+  --glass: rgba(255, 255, 255, 0.86);
+  --shadow: 0 2px 6px rgba(92, 40, 60, 0.05), 0 12px 32px rgba(92, 40, 60, 0.09);
+  --shadow-sm: 0 1px 2px rgba(92, 40, 60, 0.05), 0 6px 18px rgba(92, 40, 60, 0.07);
+  --invert-bg: #2b1f25;
+  --invert-text: #ffffff;
+  --accent: #c2255c;
+  --accent-ink: #9d174d;
+  --accent-soft: #fbe4ec;
+  --aurora-a: rgba(255, 210, 191, 0.7);
+  --aurora-b: rgba(249, 192, 214, 0.7);
+  --aurora-c: rgba(222, 210, 255, 0.6);
+}
+
+html.dark[data-design="soft"] {
+  /* «Вечер»: тёплое какао с винным оттенком вместо холодной сливы. Тени на тёмном
+     не видны, поэтому глубину дают светлые края и ступени поверхностей. */
+  --bg: #171113;
+  --card: #221a1d;
+  --card-2: #2b2125;
+  --card-3: #3a2d32;
+  --line: rgba(255, 235, 242, 0.08);
+  --text: #f5ecef;
+  --muted: #b8a5ad;
+  /* Было #85737a — 4,2 на фоне и 3,8 на карточке; теперь 5,2 и 4,7 */
+  --faint: #948289;
+  --glass: rgba(30, 23, 26, 0.9);
+  --rim: rgba(255, 235, 242, 0.06);
+  --shadow: inset 0 1px 0 rgba(255, 240, 245, 0.06), 0 0 0 1px var(--rim), 0 16px 40px rgba(0, 0, 0, 0.5);
+  --shadow-sm: inset 0 1px 0 rgba(255, 240, 245, 0.05), 0 0 0 1px var(--rim), 0 6px 18px rgba(0, 0, 0, 0.28);
+  --invert-bg: #f5ecef;
+  --invert-text: #171113;
+  --accent: #f07aa2;
+  --accent-ink: #f5a3bf;
+  --accent-soft: #3d2130;
+  --aurora-a: rgba(110, 42, 69, 0.45);
+  --aurora-b: rgba(138, 47, 87, 0.42);
+  --aurora-c: rgba(58, 43, 107, 0.45);
+  --logo-a: #a08ff2;
+  --logo-b: #f0679a;
+}
+
+/* ——— каркас: ровный фон и сияние сверху отдельным слоем ——— */
+
+/* Сияние — фоном самого экрана, как свечение в классике. Отдельный слой с анимацией
+   делал экран своим контекстом наложения, и нижнее меню оказывалось поверх шторок. */
+html[data-design="soft"] .screen {
+  background:
+    radial-gradient(55% 300px at 12% 0%, var(--aurora-a), transparent 72%),
+    radial-gradient(50% 280px at 90% 0%, var(--aurora-b), transparent 72%),
+    radial-gradient(60% 240px at 50% 0%, var(--aurora-c), transparent 75%),
+    var(--bg);
+  background-attachment: local;
+}
+
+html[data-design="soft"] .screen.pushed {
+  padding-bottom: calc(var(--safe-bottom) + 40px);
+}
+
+/* ——— типографика ——— */
+
+html[data-design="soft"] body {
+  font-size: 16px;
+  line-height: 1.45;
+}
+
+html[data-design="soft"] .caps {
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+html[data-design="soft"] .title-xl {
+  font-size: 31px;
+  line-height: 1.12;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+html[data-design="soft"] .title-lg {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+html[data-design="soft"] .title-md {
+  font-size: 17.5px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+html[data-design="soft"] .num {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+html[data-design="soft"] .small {
+  font-size: 14px;
+}
+
+html[data-design="soft"] .mono-sm {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+html[data-design="soft"] .link {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ——— шапка ——— */
+
+html[data-design="soft"] .icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-design="soft"] .icon-btn.ghost {
+  box-shadow: none;
+}
+
+/* ——— карточки: тень вместо рамки ——— */
+
+html[data-design="soft"] .card,
+html[data-design="soft"] .week,
+html[data-design="soft"] .tile {
+  border: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-design="soft"] .card + .card,
+html[data-design="soft"] .stack > * + * {
+  margin-top: 12px;
+}
+
+html[data-design="soft"] .card.flat {
+  box-shadow: none;
+}
+
+html[data-design="soft"] .card.grad {
+  box-shadow: 0 10px 28px color-mix(in srgb, #b8286a 26%, transparent);
+}
+
+html[data-design="soft"] .section {
+  margin: 28px 4px 12px;
+}
+
+html[data-design="soft"] .section:first-child {
+  margin-top: 0;
+}
+
+/* Заголовки разделов — журнальные, с засечками, а не серые подписи */
+html[data-design="soft"] .section > .caps {
+  font-family: var(--display);
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+html[data-design="soft"] .accent-left {
+  border-left: 0;
+  box-shadow: inset 4px 0 0 var(--edge, var(--me)), var(--shadow-sm);
+}
+
+html[data-design="soft"] .tile .ico {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+}
+
+/* ——— пилюли и сегменты: выбранное — розовой подложкой, а не заливкой ——— */
+
+html[data-design="soft"] .pill {
+  min-height: 44px;
+  padding: 9px 16px;
+  background: var(--card);
+  color: var(--muted);
+  font-weight: 650;
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-design="soft"] .pill.on {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+/* Пилюли с цветом человека (фильтры «Алина», «Мои») сохраняют свой цвет */
+html[data-design="soft"] .pill.tint {
+  background: color-mix(in srgb, var(--c, var(--me)) 16%, var(--card));
+  color: var(--c, var(--me));
+  box-shadow: none;
+}
+
+html[data-design="soft"] .pill.tint.on {
+  background: var(--c, var(--me));
+  color: #fff;
+}
+
+html[data-design="soft"] .pills.scroll {
+  padding: 2px 16px 8px;
+  margin-bottom: 8px;
+}
+
+html[data-design="soft"] .segmented {
+  background: var(--card-2);
+  border-radius: 999px;
+}
+
+html[data-design="soft"] .segmented button {
+  min-height: 44px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+
+html[data-design="soft"] .segmented .thumb {
+  border-radius: 999px;
+  background: var(--card);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ——— кнопки ——— */
+
+html[data-design="soft"] .btn {
+  height: 52px;
+  border-radius: 999px;
+  font-weight: 800;
+  box-shadow: 0 6px 18px color-mix(in srgb, #b8286a 24%, transparent);
+  transition: transform 0.2s var(--ease), opacity 0.2s, box-shadow 0.2s;
+}
+
+html[data-design="soft"] .btn.soft {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  box-shadow: none;
+}
+
+html[data-design="soft"] .btn.plain,
+html[data-design="soft"] .btn.tint,
+html[data-design="soft"] .btn.danger {
+  box-shadow: none;
+}
+
+html[data-design="soft"] .btn.sm {
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+}
+
+html[data-design="soft"] .chip {
+  padding: 4px 11px;
+  font-weight: 700;
+}
+
+html[data-design="soft"] .chip.solid {
+  background: color-mix(in srgb, var(--c, var(--accent)) 16%, transparent);
+}
+
+/* ——— поля ——— */
+
+html[data-design="soft"] .input,
+html[data-design="soft"] .sheet .input {
+  min-height: 48px;
+  background: var(--card-2);
+  border: 1.5px solid transparent;
+  border-radius: 16px;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+html[data-design="soft"] .input:focus {
+  border-color: var(--accent);
+  background: var(--card);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+/* Фокус с клавиатуры виден всегда */
+html[data-design="soft"] :is(button, a, [role="button"]):focus-visible {
+  outline: 2.5px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ——— нижнее меню: пристыковано к краю, подписи читаются ——— */
+
+html[data-design="soft"] .tabbar {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(var(--tabbar-h) + var(--safe-bottom));
+  padding: 6px 10px var(--safe-bottom);
+  border: 0;
+  border-radius: 24px 24px 0 0;
+  grid-template-columns: 1fr 1fr 72px 1fr 1fr;
+  box-shadow: 0 -1px 0 var(--line), 0 -10px 30px rgba(92, 40, 60, 0.08);
+}
+
+html[data-design="soft"] .tabbar button {
+  height: var(--tabbar-h);
+  padding-top: 2px;
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+html[data-design="soft"] .tabbar button.on {
+  color: var(--accent-ink);
+}
+
+html[data-design="soft"] .tabbar .tab-bg {
+  inset: auto;
+  top: 6px;
+  left: 50%;
+  width: 54px;
+  height: 30px;
+  translate: -50% 0;
+  border-radius: 999px;
+  background: var(--accent-soft);
+}
+
+html[data-design="soft"] .tabbar .center {
+  width: 58px;
+  height: 58px;
+  margin-top: -30px;
+  box-shadow: 0 8px 20px color-mix(in srgb, #b8286a 34%, transparent), 0 0 0 5px var(--card);
+}
+
+html[data-design="soft"] .tabbar .badge {
+  top: 3px;
+  background: var(--accent);
+}
+
+/* ——— шторка и тост ——— */
+
+html[data-design="soft"] .sheet-backdrop {
+  background: rgba(43, 20, 30, 0.4);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+html[data-design="soft"] .sheet {
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 10px 20px calc(24px + var(--safe-bottom));
+}
+
+html[data-design="soft"] .sheet .grip {
+  width: 42px;
+  background: var(--card-3);
+}
+
+html[data-design="soft"] .toast {
+  border-radius: 999px;
+  padding: 12px 18px;
+}
+
+/* ——— колода ——— */
+
+html[data-design="soft"] .swipe-card {
+  border-radius: var(--r-xl);
+}
+
+html[data-design="soft"] .round {
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-design="soft"] .round.yes {
+  background: var(--grad);
+}
+
+html[data-design="soft"] .rate {
+  min-height: 64px;
+  border: 0;
+  border-radius: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+html[data-design="soft"] .rate small {
+  font-size: 11px;
+}
+
+html[data-design="soft"] .proposed {
+  background: rgba(43, 20, 30, 0.5);
+}
+
+html[data-design="soft"] .match {
+  background: radial-gradient(120% 90% at 50% 18%, #5b1e3c 0%, #1b1015 72%);
+}
+
+html[data-design="soft"] .match h1 {
+  font-family: var(--display);
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  background: linear-gradient(90deg, #ffb3cc, #ffd9b8);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+/* ——— календарь ——— */
+
+html[data-design="soft"] .month .day {
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  margin: 1px auto;
+  font-weight: 600;
+}
+
+html[data-design="soft"] .month .day.today {
+  background: var(--grad);
+  color: #fff;
+}
+
+html[data-design="soft"] .month .day.sel:not(.today) {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+}
+
+html[data-design="soft"] .month .freebar {
+  left: 14px;
+  right: 14px;
+  bottom: -4px;
+}
+
+html[data-design="soft"] .month .wd {
+  font-weight: 700;
+  color: var(--muted);
+}
+
+html[data-design="soft"] .timeline .blk {
+  border-radius: 12px;
+}
+
+html[data-design="soft"] .week-axis .axis span {
+  color: var(--muted);
+}
+
+/* ——— мелочи ——— */
+
+html[data-design="soft"] .check {
+  width: 28px;
+  height: 28px;
+}
+
+html[data-design="soft"] .thumb-img {
+  border-radius: 16px;
+}
+
+html[data-design="soft"] .bubble {
+  border-radius: 20px;
+}
+
+html[data-design="soft"] .avatar {
+  box-shadow: 0 0 0 3px var(--card);
+}
+
+html[data-design="soft"] .spinner {
+  border-top-color: var(--accent);
+}
+
+/* ——— ночь: то, что на тёмном работает иначе, чем днём ——— */
+
+/* Выбранная капсула светлее дорожки, а не темнее — иначе читается как вдавленная */
+html.dark[data-design="soft"] .segmented {
+  background: var(--card);
+  box-shadow: inset 0 0 0 1px var(--rim);
+}
+
+html.dark[data-design="soft"] .segmented .thumb {
+  background: var(--card-3);
+}
+
+html.dark[data-design="soft"] .pill:not(.tint) {
+  background: var(--card-2);
+}
+
+html.dark[data-design="soft"] .pill.on:not(.tint) {
+  background: var(--accent-soft);
+}
+
+html.dark[data-design="soft"] .icon-btn {
+  background: var(--card-2);
+}
+
+html.dark[data-design="soft"] .input,
+html.dark[data-design="soft"] .sheet .input {
+  background: var(--card-2);
+}
+
+html.dark[data-design="soft"] .input:focus {
+  background: var(--card-2);
+}
+
+/* Розовое свечение кнопок на тёмном слишком яркое — приглушаем */
+html.dark[data-design="soft"] .btn,
+html.dark[data-design="soft"] .card.grad {
+  box-shadow: 0 6px 18px color-mix(in srgb, #b8286a 18%, transparent);
+}
+
+html.dark[data-design="soft"] .btn.soft,
+html.dark[data-design="soft"] .btn.plain,
+html.dark[data-design="soft"] .btn.tint,
+html.dark[data-design="soft"] .btn.danger {
+  box-shadow: none;
+}
+
+html.dark[data-design="soft"] .tabbar {
+  box-shadow: 0 -1px 0 var(--line), 0 -12px 32px rgba(0, 0, 0, 0.4);
+}
+
+html.dark[data-design="soft"] .tabbar .center {
+  box-shadow: 0 8px 20px color-mix(in srgb, #b8286a 30%, transparent), 0 0 0 5px var(--bg);
+}
+
+html.dark[data-design="soft"] .sheet {
+  background: #201719;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 245, 0.07), 0 -12px 40px rgba(0, 0, 0, 0.5);
+}
+
+html.dark[data-design="soft"] .sheet-backdrop {
+  background: rgba(8, 4, 6, 0.6);
+}
+
+html.dark[data-design="soft"] .rate {
+  background: var(--card-2);
+}
+
+html.dark[data-design="soft"] .month .day.sel:not(.today) {
+  background: var(--accent-soft);
+}
+
+html.dark[data-design="soft"] .avatar {
+  box-shadow: 0 0 0 3px var(--card);
+}
+
+/* Фото и постеры ночью не слепят */
+html.dark[data-design="soft"] .wd-tile img,
+html.dark[data-design="soft"] .look-item img,
+html.dark[data-design="soft"] .thumb-img {
+  filter: brightness(0.92);
+}
+
+/* Цифры в полях ввода — обычным шрифтом: Lora Variable внутри input на айфоне
+   не рисуется, поле выглядит пустым (жалоба 26.09.2026 на поле «Отметить»). */
+html[data-design="soft"] input.num,
+html[data-design="soft"] .input.num {
+  font-family: var(--font);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}

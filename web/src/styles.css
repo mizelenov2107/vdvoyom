@@ -1,0 +1,2051 @@
+@import "@fontsource-variable/unbounded";
+@import "@fontsource-variable/manrope";
+
+/* ——— токены ———
+   Свой облик «Вдвоём»: сливовая ночь и тёплый кремовый день, заголовки
+   круглым Unbounded, текст Manrope, фирменный переход фиолетового в розовый.
+   Тема следует телеграму: класс .dark или .light на <html> ставит main.tsx.
+   Цвета партнёров — переменные --me и --they из профиля. */
+:root {
+  --violet: #7b61ff;
+  --rose: #ff4f8b;
+  --sky: #3fa7ff;
+  --mint: #22c3a6;
+  --sun: #ffb020;
+  --coral: #ff6b4a;
+  --blue: var(--sky);
+  --green: #22c3a6;
+  --amber: #ffb020;
+  --pink: #ff4f8b;
+  --red: #ff4d5e;
+
+  --me: var(--violet);
+  --they: var(--rose);
+  --grad: linear-gradient(135deg, #7b61ff 0%, #c255e6 50%, #ff4f8b 100%);
+
+  --r-xl: 28px;
+  --r-lg: 24px;
+  --r-md: 18px;
+  --r-sm: 12px;
+
+  --font: "Manrope Variable", -apple-system, "SF Pro Text", system-ui, sans-serif;
+  --display: "Unbounded Variable", "Manrope Variable", system-ui, sans-serif;
+  --mono: var(--font);
+
+  --tabbar-h: 66px;
+  --safe-bottom: max(env(safe-area-inset-bottom), var(--tg-safe-area-inset-bottom, 0px));
+  /* Во весь экран сверху вырез и часы (safe-area) плюс кнопки телеграма (content-safe-area) */
+  --safe-top: calc(var(--tg-safe-area-inset-top, 0px) + var(--tg-content-safe-area-inset-top, 0px));
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+html.dark {
+  color-scheme: dark;
+  --bg: #0f0b13;
+  --card: #1a1520;
+  --card-2: #231c2a;
+  --card-3: #2f2637;
+  --line: rgba(255, 255, 255, 0.06);
+  --text: #f6f2f8;
+  --muted: #9a8fa3;
+  --faint: #8a7f93; /* было #62586b — 2,9; теперь 5,1 (классика, ?design=classic) */
+  --glass: rgba(26, 21, 32, 0.74);
+  --shadow: 0 12px 34px rgba(0, 0, 0, 0.45);
+  --invert-bg: #f6f2f8;
+  --invert-text: #0f0b13;
+  --glow: 16%;
+}
+
+html.light {
+  color-scheme: light;
+  --bg: #fbf6f2;
+  --card: #ffffff;
+  --card-2: #f5eee9;
+  --card-3: #ebe2db;
+  --line: rgba(60, 30, 50, 0.07);
+  --text: #1d1520;
+  --muted: #6e626b; /* было #7b6f78 — 4,46 */
+  --faint: #746871; /* было #b3a8b0 — 2,1; теперь 4,9 */
+  --glass: rgba(255, 255, 255, 0.8);
+  --shadow: 0 12px 30px rgba(80, 40, 70, 0.1);
+  --invert-bg: #1d1520;
+  --invert-text: #ffffff;
+  --glow: 12%;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+}
+
+body {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+img {
+  display: block;
+}
+
+/* ——— каркас ——— */
+
+.app {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background:
+    radial-gradient(90% 38% at 0% 0%, color-mix(in srgb, var(--me) var(--glow), transparent), transparent 70%),
+    radial-gradient(80% 34% at 100% 0%, color-mix(in srgb, var(--they) var(--glow), transparent), transparent 70%),
+    var(--bg);
+  background-attachment: local;
+  padding: calc(18px + var(--safe-top)) 16px calc(var(--tabbar-h) + var(--safe-bottom) + 36px);
+}
+
+.screen.pushed {
+  z-index: 20;
+  padding-bottom: calc(var(--safe-bottom) + 40px);
+}
+
+.screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* ——— типографика ——— */
+
+.caps {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+  color: var(--muted);
+}
+
+.caps::first-letter {
+  text-transform: uppercase;
+}
+
+.title-xl {
+  font-family: var(--display);
+  font-size: 30px;
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 4px 0 0;
+}
+
+.title-lg {
+  font-family: var(--display);
+  font-size: 21px;
+  line-height: 1.2;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.title-md {
+  font-size: 17.5px;
+  line-height: 1.28;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.num {
+  font-family: var(--display);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.grad-text {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.faint {
+  color: var(--faint);
+}
+
+.small {
+  font-size: 13.5px;
+}
+
+.mono-sm {
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--muted);
+}
+
+/* ——— шапка экрана ——— */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 6px 2px 18px;
+}
+
+.head .actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* Кнопки в шапке (аватары-«Настройки» на главной и т. п.) — не меньше 44 px по высоте */
+.head > button,
+.head .actions > button {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.icon-btn {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0; /* в ряду с полем ввода сжималась до 38 px */
+  border-radius: 14px;
+  background: var(--card);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  transition: transform 0.15s var(--ease), background 0.2s;
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.icon-btn.ghost {
+  background: transparent;
+}
+
+/* ——— карточки ——— */
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px;
+  position: relative;
+}
+
+.card + .card,
+.stack > * + * {
+  margin-top: 10px;
+}
+
+.card.tap {
+  transition: transform 0.18s var(--ease);
+}
+
+.card.tap:active {
+  transform: scale(0.985);
+}
+
+.card.flat {
+  background: var(--card-2);
+  border-color: transparent;
+}
+
+.card.grad {
+  background: var(--grad);
+  border: 0;
+  color: #fff;
+}
+
+.card.grad .muted {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.section {
+  margin: 26px 2px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.section:first-child {
+  margin-top: 0;
+}
+
+.link {
+  color: var(--me);
+  font-weight: 600;
+  font-size: 14.5px;
+  /* Цель для пальца не ниже 44 px (Apple HIG, закон Фиттса): текстовые кнопки
+     «Назад», «подробнее», «По часам» были по 20 px, и по ним промахивались (04.10.2026) */
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row.between {
+  justify-content: space-between;
+}
+
+.grow {
+  flex: 1;
+  min-width: 0;
+}
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accent-left {
+  border-left: 3px solid var(--edge, var(--me));
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1px 1fr;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.split .divider {
+  background: var(--line);
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+/* ——— пилюли и сегменты ——— */
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.pills.scroll {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  margin: 0 -16px 14px;
+  padding: 0 16px;
+  scrollbar-width: none;
+}
+
+.pills.scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.pill {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 9px 15px;
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  font-size: 14.5px;
+  font-weight: 550;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s, transform 0.15s var(--ease);
+}
+
+.pill:active {
+  transform: scale(0.95);
+}
+
+.pill.on {
+  background: var(--grad);
+  color: #fff;
+}
+
+.pill.tint {
+  background: color-mix(in srgb, var(--c, var(--me)) 18%, transparent);
+  color: var(--c, var(--me));
+}
+
+.pill.tint.on {
+  background: var(--c, var(--me));
+  color: #fff;
+}
+
+.segmented {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--card);
+  border-radius: 16px;
+  padding: 4px;
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.segmented button {
+  position: relative;
+  z-index: 1;
+  min-height: 44px;
+  padding: 10px 6px;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--muted);
+  border-radius: 12px;
+  transition: color 0.2s;
+}
+
+.segmented button.on {
+  color: var(--text);
+}
+
+.segmented .thumb {
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: var(--card-3);
+  box-shadow: inset 0 0 0 1px var(--line);
+  z-index: 0;
+}
+
+/* ——— кнопки ——— */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 16px;
+  font-weight: 750;
+  font-size: 16px;
+  background: var(--grad);
+  color: #fff;
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--rose) 28%, transparent);
+  transition: transform 0.15s var(--ease), opacity 0.2s;
+  width: 100%;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+}
+
+.btn.soft {
+  background: var(--card-2);
+  color: var(--text);
+  box-shadow: none;
+}
+
+.btn.plain {
+  background: var(--invert-bg);
+  color: var(--invert-text);
+  box-shadow: none;
+}
+
+.btn.tint {
+  background: var(--c, var(--me));
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn.danger {
+  box-shadow: none;
+  background: color-mix(in srgb, var(--red) 14%, transparent);
+  color: var(--red);
+}
+
+.btn.sm {
+  height: 44px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  width: auto;
+}
+
+.btn.inline {
+  width: auto;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.chip.solid {
+  border: 0;
+  background: color-mix(in srgb, var(--c, var(--me)) 20%, transparent);
+  color: var(--c, var(--me));
+}
+
+/* ——— поля ——— */
+
+.field {
+  display: block;
+  margin-bottom: 12px;
+}
+
+.field > span {
+  display: block;
+  margin: 0 4px 6px;
+}
+
+.input {
+  width: 100%;
+  background: var(--card-2);
+  border: 1px solid transparent;
+  border-radius: 14px;
+  padding: 13px 14px;
+  font-size: 16px;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.input:focus {
+  border-color: color-mix(in srgb, var(--me) 60%, transparent);
+  background: var(--card);
+}
+
+textarea.input {
+  resize: none;
+  min-height: 110px;
+  line-height: 1.45;
+}
+
+.input::placeholder {
+  color: var(--faint);
+}
+
+/* ——— аватарки ——— */
+
+.avatar {
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--c);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.duo {
+  display: flex;
+}
+
+.duo > * + * {
+  margin-left: -14px;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--c, var(--me));
+  flex-shrink: 0;
+}
+
+/* ——— прогресс ——— */
+
+.progress {
+  height: 8px;
+  border-radius: 99px;
+  background: var(--card-3);
+  overflow: hidden;
+  display: flex;
+}
+
+.progress > div {
+  height: 100%;
+  transition: width 0.6s var(--ease);
+}
+
+/* ——— нижнее меню ———
+   Четыре раздела по краям и круглая кнопка свайпов посередине. */
+
+.tabbar {
+  position: fixed;
+  left: 14px;
+  right: 14px;
+  bottom: calc(10px + var(--safe-bottom));
+  height: var(--tabbar-h);
+  background: var(--glass);
+  backdrop-filter: blur(24px) saturate(1.7);
+  -webkit-backdrop-filter: blur(24px) saturate(1.7);
+  border: 1px solid var(--line);
+  border-radius: 26px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 76px 1fr 1fr;
+  align-items: center;
+  padding: 6px;
+  z-index: 10;
+  box-shadow: var(--shadow);
+}
+
+.tabbar button {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  color: var(--faint);
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: 18px;
+  transition: color 0.2s;
+}
+
+.tabbar button.on {
+  color: var(--text);
+}
+
+.tabbar .tab-bg {
+  position: absolute;
+  inset: 4px 6px;
+  border-radius: 16px;
+  background: var(--card-3);
+  z-index: -1;
+}
+
+.tabbar .center {
+  justify-self: center;
+  width: 62px;
+  height: 62px;
+  margin-top: -26px;
+  border-radius: 50%;
+  background: var(--grad);
+  color: #fff;
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--rose) 45%, transparent), 0 0 0 5px var(--bg);
+  display: grid;
+  place-items: center;
+}
+
+.tabbar .center.on {
+  color: #fff;
+}
+
+.tabbar .badge {
+  position: absolute;
+  top: 5px;
+  right: calc(50% - 22px);
+  min-width: 17px;
+  height: 17px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--they);
+  color: #fff;
+  font-size: 10.5px;
+  display: grid;
+  place-items: center;
+}
+
+/* ——— шторка ——— */
+
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 50;
+}
+
+.sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  /* --kb — высота открытой клавиатуры (Sheet в ui/kit.tsx): шторка стоит над ней */
+  bottom: var(--kb, 0px);
+  /* Во весь экран сверху кнопки телеграма: верх шторки с ручкой не должен уходить под них */
+  max-height: min(92dvh, calc(100dvh - var(--safe-top) - 8px - var(--kb, 0px)));
+  overflow-y: auto;
+  background: var(--card);
+  border-radius: 28px 28px 0 0;
+  padding: 10px 18px calc(22px + var(--safe-bottom));
+  z-index: 51;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
+}
+
+.sheet .grip {
+  width: 38px;
+  height: 5px;
+  border-radius: 9px;
+  background: var(--card-3);
+  margin: 0 auto 14px;
+}
+
+.sheet .input {
+  background: var(--card-2);
+}
+
+.sheet h3 {
+  margin: 2px 0 16px;
+}
+
+/* ——— пустые состояния, тосты ——— */
+
+.empty {
+  text-align: center;
+  padding: 36px 20px;
+  color: var(--muted);
+}
+
+.empty .emoji {
+  font-size: 44px;
+  margin-bottom: 10px;
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  top: calc(14px + var(--safe-top));
+  translate: -50% 0;
+  z-index: 100;
+  background: var(--invert-bg);
+  color: var(--invert-text);
+  padding: 11px 16px;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 14.5px;
+  box-shadow: var(--shadow);
+  max-width: calc(100vw - 32px);
+}
+
+/* ——— свайп-колода ——— */
+
+.deck {
+  position: relative;
+  height: min(62dvh, 560px);
+  margin: 4px 0 18px;
+}
+
+/* Экран колоды — столбец во всю высоту экрана: колода забирает, что осталось после
+   шапки, оценок и «вернуть», но не меньше 250 px (на совсем низком экране — 40%) и не больше 560 px. Раньше высота была
+   62dvh, и на Android 448×646 и iPhone 13 оценки уходили под край (тест 11.10.2026). */
+.deck-screen {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 18px - var(--safe-top) - var(--safe-bottom) - 10px);
+}
+
+.deck-screen .deck {
+  flex: 1 1 0;
+  height: auto;
+  min-height: min(250px, 40dvh);
+  max-height: 560px;
+  margin: 4px 0 12px;
+}
+
+.deck-under {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 2px;
+}
+
+.deck-under .link {
+  color: var(--muted);
+}
+
+.swipe-card {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: var(--card-2);
+  box-shadow: var(--shadow);
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
+}
+
+.swipe-card .poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.swipe-card .shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 38%, rgba(0, 0, 0, 0.55) 62%, rgba(0, 0, 0, 0.92) 100%);
+}
+
+.swipe-card .info {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  color: #fff;
+}
+
+.swipe-card .info .chip {
+  color: rgba(255, 255, 255, 0.85);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Общий рейтинг фильма: золотая звезда, как привыкли видеть оценку */
+.chip.score,
+.swipe-card .info .chip.score {
+  background: #f5c518;
+  border-color: #f5c518;
+  color: #141414;
+}
+
+.stamp {
+  position: absolute;
+  top: 26px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 3px solid;
+  font-weight: 800;
+  font-size: 26px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
+.stamp.yes {
+  left: 22px;
+  color: #34d17f;
+  rotate: -14deg;
+}
+
+.stamp.no {
+  right: 22px;
+  color: #ff5a5f;
+  rotate: 14deg;
+}
+
+.deck-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+
+.round {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  transition: transform 0.15s var(--ease);
+}
+
+.round:active {
+  transform: scale(0.9);
+}
+
+.round.sm {
+  width: 48px;
+  height: 48px;
+}
+
+.round.no {
+  color: #ff5a5f;
+}
+
+.round.yes {
+  color: #fff;
+  background: linear-gradient(135deg, #ff5f8f, #ff7a59);
+}
+
+/* Пять оценок под колодой */
+.rate-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+}
+
+.rate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 2px 8px;
+  border-radius: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+}
+
+.rate .emoji {
+  font-size: 26px;
+  line-height: 1;
+}
+
+.rate small {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.rate.hot {
+  background: var(--grad);
+  border-color: transparent;
+}
+
+.rate.hot small {
+  color: #fff;
+}
+
+.stamp.hot {
+  left: 50%;
+  translate: -50% 0;
+  top: 40%;
+  color: #ffb020;
+  rotate: -6deg;
+}
+
+.proposed {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  right: 72px;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 99px;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 13.5px;
+  font-weight: 700;
+  z-index: 2;
+}
+
+/* ——— мэтч ——— */
+
+/* Мэтч на весь экран. Содержимое прокручивается, если не влезло, и центрируется
+   «безопасно»: auto-поля у .match-body центрируют, пока место есть, и не режут
+   верх, когда его нет (justify-content: center резал заголовок и кнопку на Android
+   448×646 — тест 11.10.2026). Постер ужимается по высоте экрана. */
+.match {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  color: #fff;
+  text-align: center;
+  background: radial-gradient(120% 90% at 50% 20%, #3a1f4f 0%, #120c1c 70%);
+}
+
+.match-scroll {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: safe center;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  padding: calc(56px + var(--safe-top)) 20px calc(20px + var(--safe-bottom));
+}
+
+.match-body {
+  margin: auto 0;
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.match-close {
+  position: absolute;
+  top: calc(8px + var(--safe-top));
+  right: 8px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.match-lead {
+  margin: 0 0 18px;
+  opacity: 0.8;
+}
+
+.match-duo {
+  margin-top: 18px;
+}
+
+.match-title {
+  margin: 12px 0 4px;
+}
+
+.match-actions {
+  width: 100%;
+  max-width: 360px;
+  margin-top: 22px;
+  display: grid;
+  gap: 10px;
+}
+
+.match .poster {
+  display: block;
+  height: clamp(150px, calc(100dvh - 440px - var(--safe-top) - var(--safe-bottom)), 390px);
+  width: auto;
+  max-width: min(62vw, 260px);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 22px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* Низкий экран: заголовок и отступы плотнее, чтобы постер не сжимался в марку */
+@media (max-height: 700px) {
+  .match .match-body h1 {
+    font-size: 34px;
+    margin-bottom: 2px;
+  }
+  .match-lead {
+    margin-bottom: 12px;
+  }
+  .match-duo {
+    margin-top: 12px;
+  }
+  .match-title {
+    margin-top: 8px;
+  }
+  .match-actions {
+    margin-top: 16px;
+  }
+  .match .poster {
+    height: clamp(140px, calc(100dvh - 402px - var(--safe-top) - var(--safe-bottom)), 390px);
+  }
+}
+
+.match h1 {
+  font-size: 44px;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  margin: 0 0 6px;
+  background: linear-gradient(90deg, #ff9ac1, #ffd29a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ——— календарь ——— */
+
+.month {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  text-align: center;
+}
+
+.month .wd {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  padding: 4px 0 8px;
+  text-transform: uppercase;
+}
+
+.month .day {
+  position: relative;
+  height: 46px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 15px;
+}
+
+.month .day.out {
+  color: var(--faint);
+  opacity: 0.5;
+}
+
+.month .day.today {
+  background: var(--invert-bg);
+  color: var(--invert-text);
+  font-weight: 700;
+}
+
+.month .day.sel:not(.today) {
+  background: var(--card-2);
+}
+
+.month .dots {
+  display: flex;
+  gap: 3px;
+  height: 5px;
+  margin-top: 3px;
+}
+
+.month .dots i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.month .freebar {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: 3px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--green);
+  opacity: 0.8;
+}
+
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: 42px 1fr 1fr;
+  column-gap: 6px;
+}
+
+.timeline .hour {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+  transform: translateY(-7px);
+}
+
+.timeline .col {
+  position: relative;
+  border-left: 1px solid var(--line);
+}
+
+.timeline .blk {
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  border-radius: 10px;
+  padding: 5px 7px;
+  font-size: 11.5px;
+  line-height: 1.2;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--c) 22%, var(--card));
+  border-left: 3px solid var(--c);
+}
+
+.timeline .blk.skip {
+  opacity: 0.35;
+  background: transparent;
+  border: 1px dashed var(--c);
+}
+
+.timeline .free {
+  position: absolute;
+  left: 42px;
+  right: 0;
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  border-top: 1px dashed color-mix(in srgb, var(--green) 50%, transparent);
+  border-bottom: 1px dashed color-mix(in srgb, var(--green) 50%, transparent);
+  pointer-events: none;
+}
+
+/* ——— вся картина: две недели дорожками ——— */
+
+.week {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 8px 10px 6px;
+  margin-bottom: 12px;
+}
+
+.week-axis,
+.week-row {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  gap: 8px;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+}
+
+.week-axis .axis {
+  position: relative;
+  height: 16px;
+}
+
+.week-axis .axis span {
+  position: absolute;
+  translate: -50% 0;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--faint);
+}
+
+.week-day {
+  border-top: 1px solid var(--line);
+}
+
+.week-day.weekend .week-label {
+  color: var(--they);
+}
+
+.week-row {
+  padding: 7px 0;
+}
+
+.week-label {
+  font-size: 12.5px;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.lanes {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  padding: 2px 0;
+}
+
+.lanes .common {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--mint) 26%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--mint) 55%, transparent);
+}
+
+.lane {
+  position: relative;
+  height: 11px;
+  border-radius: 6px;
+  background: var(--card-2);
+}
+
+.lane.empty {
+  background: repeating-linear-gradient(90deg, var(--card-2) 0 6px, transparent 6px 10px);
+}
+
+.lane .seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  background: var(--c);
+}
+
+.lane .seg.online {
+  opacity: 0.45;
+}
+
+.lane .seg.skip {
+  background: transparent;
+  border: 1.5px dashed var(--c);
+  opacity: 0.6;
+}
+
+.week-detail {
+  padding: 4px 2px 12px 42px;
+}
+
+/* ——— гардероб ——— */
+
+.wd-tile {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--card-2);
+}
+
+.wd-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wd-dot {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.wd-dot.static {
+  position: static;
+  width: 14px;
+  height: 14px;
+  border-width: 1.5px;
+}
+
+.look-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.look-item {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-2);
+}
+
+.look-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.look-item.locked {
+  outline: 2.5px solid var(--sun);
+  outline-offset: -2.5px;
+}
+
+.look-item .lock {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--sun);
+  color: #1d1520;
+}
+
+/* ——— мелочи ——— */
+
+.check {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid var(--c, var(--faint));
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s;
+}
+
+.check.on {
+  background: var(--c, var(--green));
+  border-color: var(--c, var(--green));
+  color: #fff;
+}
+
+/* Знакомство: кружки цвета и согласие — цели для пальца не меньше 44 px */
+.color-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 800;
+  transition: box-shadow 0.2s;
+}
+
+.color-dot:disabled {
+  cursor: not-allowed;
+}
+
+.consent {
+  margin: 10px 0 0;
+}
+
+/* Вся строка — галочка: раньше нажимался только кружок 28×28 */
+.consent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 4px;
+  text-align: left;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
+.consent-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 14px;
+  padding-left: 42px;
+}
+
+.thumb-img {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  object-fit: cover;
+  background: var(--card-2);
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+
+.tile {
+  background: var(--card);
+  border-radius: var(--r-lg);
+  padding: 16px;
+  min-height: 108px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: left;
+  transition: transform 0.15s var(--ease);
+}
+
+.tile:active {
+  transform: scale(0.97);
+}
+
+.tile .ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--c) 18%, transparent);
+  color: var(--c);
+}
+
+.letter {
+  font-size: 17px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.bubble {
+  background: var(--card-2);
+  border-radius: 18px;
+  padding: 12px 14px;
+  white-space: pre-wrap;
+}
+
+.bubble.me {
+  background: color-mix(in srgb, var(--me) 16%, var(--card));
+}
+
+.bubble.they {
+  background: color-mix(in srgb, var(--they) 16%, var(--card));
+}
+
+.blur {
+  filter: blur(6px);
+  user-select: none;
+}
+
+.barcode-full {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #fff;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.barcode-full svg,
+.barcode-full canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+.hr {
+  height: 1px;
+  background: var(--line);
+  margin: 14px 0;
+}
+
+.scroll-x {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin: 0 -16px;
+  padding: 0 16px 4px;
+  scrollbar-width: none;
+}
+
+.scroll-x::-webkit-scrollbar {
+  display: none;
+}
+
+/* Эмодзи без вариационного селектора иначе рисуются одноцветным глифом шрифта */
+.emoji {
+  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.center {
+  text-align: center;
+}
+
+.spinner {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 3px solid var(--card-3);
+  border-top-color: var(--text);
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
+
+/* ——— переключатель ——— */
+
+.toggle {
+  position: relative;
+  width: 50px;
+  height: 30px;
+  border-radius: 99px;
+  background: var(--card-3, var(--line));
+  flex-shrink: 0;
+  transition: background 0.2s;
+  /* Прозрачная рамка добавляет пальцу 7 px со всех сторон: цель 64×44, а рисунок
+     прежний — фон обрезан по внутренней границе, бегунок отсчитывается от неё же */
+  box-sizing: content-box;
+  border: 7px solid transparent;
+  background-clip: padding-box;
+  margin: -7px;
+}
+
+.toggle span {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s;
+}
+
+.toggle.on {
+  background: var(--accent, var(--me));
+  background-clip: padding-box; /* шорткат background сбрасывает обрезку — без этого рамка-«поле для пальца» закрашивалась */
+}
+
+.toggle.on span {
+  transform: translateX(20px);
+}
+
+/* ——— счётчик «− N +» ——— */
+
+.stepper {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--card-2);
+}
+
+.stepper button {
+  width: 40px;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+.stepper input {
+  width: 44px;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font: 800 18px var(--font);
+  color: var(--text);
+  outline: none;
+}
+
+/* ——— «Вдвоём+»: веер карточек на обложке, всё в одной розово-винной гамме ——— */
+
+/* Веер подстраивается под высоту экрана: на iPhone SE во весь экран телеграма
+   иначе заголовок и цена уходят под кнопку покупки */
+.plus-fan {
+  --card-w: min(38vw, 17dvh, 164px);
+  position: relative;
+  height: calc(var(--card-w) * 1.25 + 34px);
+  margin: 0 0 8px;
+}
+
+.plus-card {
+  position: absolute;
+  top: 18px;
+  width: var(--card-w);
+  aspect-ratio: 4 / 5;
+  border-radius: 22px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #fff;
+  box-shadow: 0 14px 30px rgba(120, 20, 60, 0.28);
+}
+
+.plus-card .tag {
+  align-self: flex-start;
+  font-size: 11.5px;
+  font-weight: 800;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.plus-card .big {
+  font-size: 44px;
+  line-height: 1;
+  text-align: center;
+}
+
+.plus-card .cap {
+  font-weight: 800;
+  font-size: 13.5px;
+  line-height: 1.2;
+}
+
+.plus-card.c1 {
+  left: 2%;
+  transform: rotate(-9deg);
+  background: linear-gradient(160deg, #e0527f, #9d174d);
+}
+
+.plus-card.c2 {
+  left: calc(50% - var(--card-w) / 2);
+  top: 4px;
+  z-index: 2;
+  transform: rotate(2deg);
+  background: linear-gradient(160deg, #f07aa2, #c2255c);
+}
+
+.plus-card.c3 {
+  right: 2%;
+  transform: rotate(10deg);
+  background: linear-gradient(160deg, #c2255c, #6e1238);
+}
+
+.pay-way {
+  width: 100%;
+  text-align: left;
+  margin: 0;
+  gap: 14px;
+  color: var(--text);
+}
+
+.pay-way svg {
+  color: var(--accent, var(--me));
+  flex-shrink: 0;
+}
+
+.pay-way:disabled {
+  opacity: 0.5;
+}
+
+/* Боковые карточки веера наполовину под средней: их подписи обрезались бы — показываем ярлык и значок */
+.plus-card.c1 .cap,
+.plus-card.c3 .cap {
+  visibility: hidden;
+}
+
+.plus-card.c3 .tag {
+  align-self: flex-end;
+}
+
+/* ——— акция на главной ——— */
+
+.offer-timer {
+  font: 800 26px var(--font);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
+/* «Бесплатно | Вдвоём+» под обложкой */
+.plus-compare {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 4px 14px;
+}
+
+.plus-compare-rule {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line);
+}
+
+/* ——— продающий экран «Вдвоём+» (27.09.2026) ——— */
+
+.plus-h1 {
+  font-family: var(--display);
+  font-size: 29px;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 4px 0 8px;
+  text-wrap: balance;
+}
+
+.plus-lead {
+  margin: 0 0 12px;
+  line-height: 1.45;
+  color: var(--text-2, var(--muted));
+}
+
+/* Цена на первом экране — белая карточка с тонкой рамкой: залитой остаётся только кнопка */
+.plus-offer {
+  margin: 0 0 6px;
+  padding: 11px 14px;
+  border: 1.5px solid color-mix(in srgb, var(--accent, var(--me)) 55%, transparent);
+}
+
+.plus-offer-price {
+  font-family: var(--display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--accent, var(--me));
+}
+
+.plus-plan {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  gap: 12px;
+}
+
+@media (max-height: 720px) {
+  .plus-fan {
+    --card-w: min(38vw, 13dvh, 164px);
+  }
+}
+
+.plus-test {
+  gap: 12px;
+  padding: 9px 0;
+  align-items: center;
+}
+
+.plus-test + .plus-test {
+  border-top: 1px solid var(--line);
+}
+
+.plus-table {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 9px 10px;
+  align-items: baseline;
+}
+
+.plus-faq {
+  display: grid;
+  gap: 12px;
+}
+
+/* Кнопка покупки прилипает к низу экрана: всегда видна, цена в ней.
+   Отрицательный нижний отступ съедает padding-bottom у .screen.pushed,
+   иначе в самом низу прокрутки кнопка подпрыгивала бы вверх. */
+.plus-sticky .btn {
+  min-height: 50px;
+}
+
+.plus-sticky {
+  position: sticky;
+  /* sticky отсчитывает от края содержимого, то есть над padding-bottom у .screen.pushed:
+     без минуса кнопка висела бы в 40+ px от низа, и под ней просвечивал список */
+  bottom: calc(-1 * (var(--safe-bottom) + 40px));
+  z-index: 5;
+  margin: 18px -16px calc(-1 * (var(--safe-bottom) + 40px));
+  padding: 12px 16px calc(12px + var(--safe-bottom));
+  background: color-mix(in srgb, var(--bg) 90%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+}
+
+/* Искорка «Вдвоём+» в шапке главной, как кнопка премиума у «Между строк» */
+.plus-spark {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: linear-gradient(150deg, #f07aa2, #c2255c 55%, #8f1747);
+  box-shadow: 0 6px 16px rgba(194, 37, 92, 0.35);
+  flex-shrink: 0;
+}
+
+.plus-spark::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(194, 37, 92, 0.45);
+  animation: plus-spark 2.4s var(--ease) infinite;
+}
+
+@keyframes plus-spark {
+  0% { transform: scale(0.9); opacity: 0.9; }
+  70%, 100% { transform: scale(1.25); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus-spark::after { animation: none; }
+}
+
+/* ——— отзывы закрытого теста (27.09.2026) ——— */
+
+.feedback-fab {
+  position: fixed;
+  right: 14px;
+  bottom: calc(var(--tabbar-h) + var(--safe-bottom) + 12px);
+  z-index: 30;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 99px;
+  font-weight: 750;
+  font-size: 14px;
+  color: var(--accent, var(--me));
+  background: var(--card);
+  border: 1px solid color-mix(in srgb, var(--accent, var(--me)) 30%, var(--line));
+  box-shadow: 0 8px 22px rgba(60, 20, 40, 0.16);
+}
+
+.feedback-shot {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-2);
+}
+
+.feedback-shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.feedback-shot button {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ——— вопрос дня: реакции и ответ на ответ (28.09.2026) ——— */
+
+.react-host {
+  position: relative;
+}
+
+.react-badge {
+  position: absolute;
+  right: 8px;
+  bottom: -12px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 5px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  background: var(--card);
+  box-shadow: 0 3px 10px rgba(60, 20, 40, 0.16);
+}
+
+.react-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.react {
+  min-width: 44px;
+  height: 44px;
+  border-radius: 99px;
+  font-size: 18px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  transition: transform 0.15s var(--ease);
+}
+
+.react:active {
+  transform: scale(0.9);
+}
+
+.react.on {
+  background: color-mix(in srgb, var(--accent, var(--me)) 16%, var(--card));
+  border-color: color-mix(in srgb, var(--accent, var(--me)) 55%, transparent);
+}
+
+/* Свои сообщения справа, её — слева, как в мессенджере */
+.thread-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.bubble.thread {
+  position: relative;
+  max-width: 86%;
+}
+
+.bubble.thread.me {
+  align-self: flex-end;
+  padding-right: 34px;
+}
+
+.bubble.thread.they {
+  align-self: flex-start;
+}
+
+.thread-del {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  padding: 4px;
+}
+
+/* ——— админка владельца (28.09.2026) ——— */
+
+.admin-feed {
+  gap: 10px;
+  padding: 9px 0;
+  align-items: baseline;
+}
+
+.admin-feed + .admin-feed {
+  border-top: 1px solid var(--line);
+}
+
+/* Тесты (08.10.2026): точки прогресса раунда вместо «21 из 40» */
+.test-dot {
+  height: 8px;
+  border-radius: 4px;
+  outline-offset: 1px;
+  transition: width 0.2s var(--ease);
+}

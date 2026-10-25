@@ -1,0 +1,20 @@
+{
+  "name": "vdvoyom",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev:server": "cd server && DEV_AUTH=1 PLUS=1 DB_PATH=./dev.db node --watch src/index.ts",
+    "dev:web": "cd web && npx vite",
+    "build": "cd web && npx vite build",
+    "test": "rm -rf /tmp/vdvoyom-test.db* /tmp/vdvoyom-test-imdb.db* /tmp/vdvoyom-test-posters && cd server && PLUS=1 DB_PATH=/tmp/vdvoyom-test.db IMDB_DB_PATH=/tmp/vdvoyom-test-imdb.db FILM_POSTERS_DIR=/tmp/vdvoyom-test-posters node --test --test-concurrency=1 test/*.test.ts",
+    "typecheck": "cd server && npx tsc --noEmit -p . && cd ../web && npx tsc --noEmit -p .",
+    "e2e": "playwright test",
+    "e2e:okno": "PWSLOW=700 playwright test --headed --project=chrome",
+    "e2e:ui": "playwright test --ui",
+    "pokaz": "POKAZ=1 PWSLOW=450 playwright test e2e/pokaz.spec.ts --headed --project=chrome --workers=1",
+    "e2e:otchet": "playwright show-report e2e/otchet"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0"
+  }
+}

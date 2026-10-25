@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Иконка «Вдвоём» на белом (26.09.2026): целое сердце из двух половинок (двое), тонкий шов. Разведённые половинки читались как разбитое сердце. -->
+  <defs>
+    <linearGradient id="l" x1="0" y1="0" x2="0.9" y2="1">
+      <stop offset="0" stop-color="#a996ff"/>
+      <stop offset="1" stop-color="#6a4bff"/>
+    </linearGradient>
+    <linearGradient id="r" x1="0.1" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff85ae"/>
+      <stop offset="1" stop-color="#ea3a76"/>
+    </linearGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.3"/>
+      <stop offset="0.42" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="170%">
+      <feDropShadow dx="0" dy="3.2" stdDeviation="3.4" flood-color="#c2255c" flood-opacity="0.22"/>
+    </filter>
+    <clipPath id="cl"><rect x="0" y="0" width="49.5" height="100"/></clipPath>
+    <clipPath id="cr"><rect x="50.5" y="0" width="49.5" height="100"/></clipPath>
+    <path id="h" d="M50 90C22 70 4 53 4 33 4 18 15 7 29 7c9 0 17 5 21 13 4-8 12-13 21-13 14 0 25 11 25 26 0 20-18 37-46 57z"/>
+  </defs>
+  <rect width="1024" height="1024" fill="#ffffff"/>
+  <g transform="translate(173 172) scale(6.78)">
+    <g filter="url(#shadow)">
+      <g clip-path="url(#cl)"><use href="#h" fill="url(#l)"/><use href="#h" fill="url(#gloss)"/></g>
+      <g clip-path="url(#cr)"><use href="#h" fill="url(#r)"/><use href="#h" fill="url(#gloss)"/></g>
+    </g>
+  </g>
+</svg>
